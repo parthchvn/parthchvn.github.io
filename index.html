@@ -1,35 +1,139 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Parth Chavan</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>parth chavan</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
 </head>
 <body>
-  <div id="container">
-    <header>
+
+  <div class="grain" aria-hidden="true"></div>
+
+  <nav>
+    <ul>
+      <li><a href="/" class="nav-home">Home</a></li>
+      <li class="dot">&middot;</li>
+      <li><a href="#research">Research</a></li>
+      <li class="dot">&middot;</li>
+      <li><a href="#projects">Projects</a></li>
+      <li class="dot">&middot;</li>
+      <li><a href="/notes">Notes</a></li>
+      <li class="dot">&middot;</li>
+      <li><a href="/blog">Blog</a></li>
+    </ul>
+  </nav>
+
+  <main>
+
+    <section class="hero fade-in">
       <h1>Parth Chavan</h1>
-      <p class="tagline">Math &amp; CS @ École Polytechnique</p>
-      <p class="links">
-        <a href="https://github.com/parthchav">GitHub</a>
-        <a href="mailto:parth.chavan@polytechnique.edu">Email</a>
-      </p>
-    </header>
+      <p class="tagline">maths &amp; cs &middot; <a href="https://www.polytechnique.edu/en" target="_blank" rel="noopener">école polytechnique</a></p>
+    </section>
 
-    <main>
+    <section class="bio fade-in delay-1">
       <p>
-        I’m interested in probability, algorithms, and building cool things.
+        Hey! I'm Parth — welcome to my little island of the internet. I'm studying mathematics and computer science at <a href="https://www.polytechnique.edu/en" target="_blank" rel="noopener">École Polytechnique</a> in Paris, and I spend most of my time thinking about <strong>complex analysis</strong>, <strong>number theory</strong>, <strong>combinatorics</strong>, <strong>probability &amp; algorithms</strong>.
       </p>
 
-      <ul>
-        <li><a href="https://github.com/parthchav">Projects &amp; code</a></li>
-      </ul>
-    </main>
+      <p>
+      I've done some budding research in these areas and have been fortunate to collaborate with <a href="https://cvignat.github.io/who_and_where.html" target="_blank" rel="noopener">Christophe Vignat</a> and others along the way.
+      </p>
+      <p>
+        When I'm not doing math, you'll probably find me messing around with code on <a href="https://github.com/parthchav" target="_blank" rel="noopener">GitHub</a> or exploring France. I'm always happy to chat — feel free to <a href="mailto:parth.chavan@polytechnique.edu">reach out</a>!
+      </p>
+    </section>
 
-    <footer>
-      <small>© Parth Chavan</small>
-    </footer>
-  </div>
+    <hr class="sep" />
+
+    <!--RESEARCH / PUBLICATIONS-->
+    <section id="research" class="fade-in delay-2">
+      <h2>Research</h2>
+      <p class="section-intro">
+        Papers and preprints. See also my <a href="https://scholar.google.com/citations?user=RBBCv4oAAAAJ&hl=en" target="_blank" rel="noopener">Google Scholar</a> profile.
+      </p>
+
+      <div class="pub-list">
+
+        <div class="pub">
+          <span class="pub-year">2025</span>
+          <div class="pub-body">
+            <a href="https://arxiv.org/abs/2509.01780" target="_blank" rel="noopener" class="pub-title">The joy of multisection: elementary approaches to Ramanujan's lacunary identities for Bernoulli numbers</a>
+            <span class="pub-meta">Parth Chavan, Christophe Vignat &middot; <em>Preprint</em></span>
+            <span class="pub-links"><a href="https://arxiv.org/abs/2509.01780" target="_blank" rel="noopener">arXiv</a><a href="https://arxiv.org/pdf/2509.01780" target="_blank" rel="noopener">pdf</a></span>
+          </div>
+        </div>
+
+        <div class="pub">
+          <span class="pub-year">2023</span>
+          <div class="pub-body">
+            <a href="https://arxiv.org/abs/2205.08183" target="_blank" rel="noopener" class="pub-title">Hurwitz zeta functions and Ramanujan's identity for odd zeta values</a>
+            <span class="pub-meta">Parth Chavan &middot; <em>The Ramanujan Journal</em>, 2023</span>
+            <span class="pub-links"><a href="https://arxiv.org/abs/2205.08183" target="_blank" rel="noopener">arXiv</a><a href="https://arxiv.org/pdf/2205.08183" target="_blank" rel="noopener">pdf</a></span>
+          </div>
+        </div>
+
+        <div class="pub">
+          <span class="pub-year">2023</span>
+          <div class="pub-body">
+            <span class="pub-title no-link">Counting ideals in numerical semigroups</span>
+            <span class="pub-meta">Parth Chavan &middot; <em>Preprint</em></span>
+          </div>
+        </div>
+
+        <div class="pub">
+          <span class="pub-year">2022</span>
+          <div class="pub-body">
+            <a href="https://arxiv.org/abs/2107.06457" target="_blank" rel="noopener" class="pub-title">Dirichlet series under standard convolutions: variations on Ramanujan's identity for odd zeta values</a>
+            <span class="pub-meta">Parth Chavan, Sarth Chavan, Christophe Vignat, Tanay Wakhare &middot; <em>Journal of Number Theory</em>, 2022</span>
+            <span class="pub-links"><a href="https://arxiv.org/abs/2107.06457" target="_blank" rel="noopener">arXiv</a><a href="https://arxiv.org/pdf/2107.06457" target="_blank" rel="noopener">pdf</a></span>
+          </div>
+        </div>
+
+        <div class="pub">
+          <span class="pub-year">2022</span>
+          <div class="pub-body">
+            <a href="https://arxiv.org/abs/2202.01111" target="_blank" rel="noopener" class="pub-title">Hypergraph Fuss–Catalan numbers</a>
+            <span class="pub-meta">Parth Chavan, Andrew Lee, Karthik Seetharaman &middot; <em>Preprint</em></span>
+            <span class="pub-links"><a href="https://arxiv.org/abs/2202.01111" target="_blank" rel="noopener">arXiv</a><a href="https://arxiv.org/pdf/2202.01111" target="_blank" rel="noopener">pdf</a></span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <hr class="sep" />
+
+    <!--PROJECTS-->
+    <section id="projects" class="fade-in delay-2">
+      <h2>Projects</h2>
+      <p class="section-intro">
+        Things I've built or am building. More on <a href="https://github.com/parthchav" target="_blank" rel="noopener">GitHub</a>.
+      </p>
+      <ul class="project-list">
+        <li><a href="https://github.com/parthchav" target="_blank" rel="noopener">Projects &amp; code</a> — various experiments, implementations, and mathematical tools.</li>
+      </ul>
+    </section>
+
+    <hr class="sep" />
+
+    <!--Links-->
+    <section id="links" class="fade-in delay-2">
+      <div class="social-row">
+        <a href="mailto:parth.chavan@polytechnique.edu">Email</a>
+        <a href="https://scholar.google.com/citations?user=RBBCv4oAAAAJ&hl=en" target="_blank" rel="noopener">Google Scholar</a>
+        <a href="https://github.com/parthchav" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>© 2026 Parth Chavan.</p>
+  </footer>
+
 </body>
 </html>
