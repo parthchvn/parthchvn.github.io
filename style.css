@@ -1,11 +1,11 @@
 :root {
-  --bg: #141210;
-  --bg-raised: #1c1a17;
-  --text: #e4ddd3;
-  --muted: #9a9285;
-  --dim: #655e54;
-  --accent: #e8a87c;
-  --border: #2e2a25;
+  --bg: #101216;
+  --bg-raised: #181b21;
+  --text: #dbe0e8;
+  --muted: #8b94a1;
+  --dim: #565e6a;
+  --accent: #8bb8e8;
+  --border: #272b33;
   --max-w: 640px;
 }
 
@@ -13,7 +13,7 @@
 
 html { scroll-behavior: smooth; }
 
-::selection { background: #c9735b; color: var(--bg); }
+::selection { background: #5f86c4; color: var(--bg); }
 
 body {
   font-family: 'DM Sans', system-ui, sans-serif;
@@ -30,7 +30,7 @@ a {
   transition: color 0.2s;
 }
 
-a:hover { color: #f5ddc8; }
+a:hover { color: #cadff6; }
 
 strong { font-weight: 600; }
 
@@ -174,7 +174,7 @@ a.pub-title:hover { color: var(--accent); }
   text-transform: uppercase;
   letter-spacing: 0.04em;
   padding: 0.2em 0.6em;
-  border: 1px solid #c9735b;
+  border: 1px solid #5f86c4;
   border-radius: 3px;
   transition: background 0.2s, color 0.2s;
 }
@@ -232,6 +232,155 @@ footer {
   font-size: 0.82rem;
   color: var(--dim);
 }
+
+/* ============================================================
+   notes / blog
+   ============================================================ */
+
+/* index listing */
+
+.post-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.7rem;
+}
+
+.post-list li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.post-date {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--dim);
+}
+
+.post-list .post-title {
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--text);
+}
+
+.post-list a.post-title:hover { color: var(--accent); }
+
+.post-excerpt {
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+
+/* single post */
+
+.note-head { padding-top: 2.5rem; }
+
+.note-head h1 {
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: clamp(2rem, 5.5vw, 2.7rem);
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+}
+
+.note-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-top: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.note-body { padding-top: 1.8rem; }
+
+.note-body p {
+  margin-bottom: 1.15rem;
+  font-size: 1.02rem;
+  line-height: 1.8;
+}
+
+.note-body h2 {
+  font-size: 1.4rem;
+  font-weight: 500;
+  margin: 2.2rem 0 0.8rem;
+}
+
+.note-body h3 {
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 1.8rem 0 0.6rem;
+}
+
+.note-body ul,
+.note-body ol {
+  margin: 0 0 1.15rem 1.35rem;
+}
+
+.note-body li {
+  margin-bottom: 0.4rem;
+  line-height: 1.75;
+}
+
+.note-body li::marker { color: var(--dim); }
+
+.note-body blockquote {
+  margin: 1.5rem 0;
+  padding: 0.4rem 0 0.4rem 1.2rem;
+  border-left: 2px solid var(--accent);
+  color: var(--muted);
+  font-style: italic;
+}
+
+.note-body code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85em;
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.12em 0.4em;
+}
+
+.note-body pre {
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1rem 1.1rem;
+  overflow-x: auto;
+  margin: 0 0 1.3rem;
+}
+
+.note-body pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+
+/* keep wide display equations scrollable rather than clipped */
+.note-body mjx-container[display="true"] {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.2rem 0;
+}
+
+.back-link {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 2.5rem;
+}
+
+.back-link:hover { color: var(--accent); }
 
 /* mobile */
 

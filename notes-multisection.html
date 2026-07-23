@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The joy of multisection · Parth Chavan</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- MathJax: renders $inline$ and $$display$$ LaTeX in the browser -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <span class="dot">&middot;</span>
+    <a href="index.html#research">Research</a>
+    <span class="dot">&middot;</span>
+    <a href="index.html#projects">Projects</a>
+    <span class="dot">&middot;</span>
+    <a href="notes.html">Notes</a>
+  </nav>
+
+  <main>
+
+    <article>
+      <header class="note-head">
+        <h1>The joy of multisection</h1>
+        <p class="note-meta">6 July 2026 · ~5 min</p>
+      </header>
+
+      <div class="note-body">
+        <p>
+          Here is a question that sounds harder than it is: given a power series, how do you keep only the terms whose exponents lie in a fixed arithmetic progression? Say you have $f(x) = \sum_{k \ge 0} a_k x^k$ and you only want the terms where $k$ is even, or $k \equiv 2 \pmod 5$. The answer is a single, endlessly reusable trick, and it's genuinely one of my favourite things in elementary analysis.
+        </p>
+
+        <h2>Warm-up: even and odd parts</h2>
+        <p>
+          Start with the simplest case, $n = 2$. Notice that replacing $x$ with $-x$ flips the sign of exactly the odd-powered terms. So adding $f(x)$ and $f(-x)$ cancels everything odd and doubles everything even:
+        </p>
+        <p>
+          $$\frac{f(x) + f(-x)}{2} = \sum_{k \text{ even}} a_k x^k.$$
+        </p>
+        <p>
+          Apply this to $e^x$ and you recover a classic:
+        </p>
+        <p>
+          $$\frac{e^x + e^{-x}}{2} = \cosh x = \sum_{k \ge 0} \frac{x^{2k}}{(2k)!}.$$
+        </p>
+        <p>
+          The subtraction gives you $\sinh x$ and the odd terms. Nothing surprising yet &mdash; but the mechanism generalises beautifully.
+        </p>
+
+        <h2>The roots-of-unity filter</h2>
+        <p>
+          For a general modulus $n$, the sign flip $x \mapsto -x$ becomes a rotation by an $n$-th root of unity. Let $\omega = e^{2\pi i / n}$. The claim is that
+        </p>
+        <p>
+          $$\frac{1}{n} \sum_{j=0}^{n-1} \omega^{-jr} \, f(\omega^j x) \;=\; \sum_{k \equiv r \,(\mathrm{mod}\ n)} a_k \, x^k.$$
+        </p>
+        <p>
+          Why does it work? The whole thing hinges on one fact about roots of unity: summing $\omega^{jm}$ over a full period of $j$ gives $n$ when $n \mid m$ and $0$ otherwise. Plug $f(\omega^j x) = \sum_k a_k \omega^{jk} x^k$ into the left side, swap the order of summation, and the inner sum over $j$ acts as a detector &mdash; it keeps exactly the coefficients with $k \equiv r$ and kills the rest. That's the entire idea.
+        </p>
+
+        <blockquote>
+          Multisection turns a question about coefficients into a question about symmetry: which rotations leave the terms you care about fixed?
+        </blockquote>
+
+        <h2>A worked example</h2>
+        <p>
+          Let's do something concrete. What is the sum of every third binomial coefficient,
+        </p>
+        <p>
+          $$\binom{n}{0} + \binom{n}{3} + \binom{n}{6} + \cdots \;=\; \sum_{k \equiv 0 \,(\mathrm{mod}\ 3)} \binom{n}{k}\,?$$
+        </p>
+        <p>
+          Take $f(x) = (1+x)^n = \sum_k \binom{n}{k} x^k$ and filter at $r = 0$, $n = 3$, with $\omega = e^{2\pi i/3}$. Evaluating at $x = 1$:
+        </p>
+        <p>
+          $$\sum_{k \equiv 0 \,(\mathrm{mod}\ 3)} \binom{n}{k} = \frac{1}{3}\left[ 2^n + (1+\omega)^n + (1+\omega^2)^n \right].$$
+        </p>
+        <p>
+          The pretty part is what $1 + \omega$ actually is. Since $\omega = -\tfrac12 + \tfrac{\sqrt3}{2} i$, we get $1 + \omega = \tfrac12 + \tfrac{\sqrt3}{2} i = e^{i\pi/3}$, a unit-modulus number. Its conjugate is $1 + \omega^2 = e^{-i\pi/3}$, so the two stray terms combine into a cosine:
+        </p>
+        <p>
+          $$\sum_{k \equiv 0 \,(\mathrm{mod}\ 3)} \binom{n}{k} = \frac{1}{3}\left( 2^n + 2\cos\frac{n\pi}{3} \right).$$
+        </p>
+        <p>
+          A clean closed form, and the small oscillating correction term is exactly the fingerprint of the two non-trivial roots of unity. Quick sanity check at $n = 3$: the left side is $\binom{3}{0} + \binom{3}{3} = 2$, and the right side is $\tfrac13(8 + 2\cos\pi) = \tfrac13(8 - 2) = 2$. It checks out.
+        </p>
+
+        <h2>Why I keep coming back to it</h2>
+        <p>
+          What I love is how little machinery this needs. No contour integrals, no generating-function heavy lifting &mdash; just the orthogonality of roots of unity, applied with a bit of nerve. The same filter shows up when you split zeta values, extract lacunary series, or chase Bernoulli-number identities, which is more or less how it wandered into my own work. Once you see it, you start noticing places it wants to be used.
+        </p>
+
+        <p>
+          If you want the fuller story &mdash; including the Bernoulli-number side of things &mdash; that's the subject of a <a href="index.html#research">recent paper</a> with Christophe Vignat.
+        </p>
+
+        <a href="notes.html" class="back-link">← back to notes</a>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>&copy; 2026 Parth Chavan.</footer>
+
+</body>
+</html>

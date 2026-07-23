@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MOEA/D: many small problems instead of one big one · Parth Chavan</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- MathJax: renders $inline$ and $$display$$ LaTeX in the browser -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <span class="dot">&middot;</span>
+    <a href="index.html#research">Research</a>
+    <span class="dot">&middot;</span>
+    <a href="index.html#projects">Projects</a>
+    <span class="dot">&middot;</span>
+    <a href="notes.html">Notes</a>
+  </nav>
+
+  <main>
+
+    <article>
+      <header class="note-head">
+        <h1>MOEA/D: many small problems instead of one big one</h1>
+        <p class="note-meta">22 July 2026 · ~7 min</p>
+      </header>
+
+      <div class="note-body">
+        <p>
+          Most of the multi-objective optimisation I met first was dominance-based: you rank a population by Pareto dominance, break ties with some diversity measure, and repeat. NSGA-II is the canonical version and it works. But there's a completely different answer to the same question, and once it clicked I found it much easier to reason about &mdash; <strong>MOEA/D</strong>, which refuses to treat the problem as one big search at all.
+        </p>
+
+        <h2>The setup</h2>
+        <p>
+          We want to minimise several objectives at once:
+        </p>
+        <p>
+          $$\text{minimise } F(x) = \big(f_1(x), f_2(x), \ldots, f_m(x)\big), \qquad x \in \Omega.$$
+        </p>
+        <p>
+          There's usually no single winner. We say $x$ <em>dominates</em> $y$ if $f_i(x) \le f_i(y)$ for every $i$ and the inequality is strict somewhere &mdash; $x$ is at least as good everywhere and genuinely better somewhere. The solutions nobody dominates form the <em>Pareto set</em>, and its image $\{F(x)\}$ is the <em>Pareto front</em>. The goal isn't one point; it's a well-spread approximation of that whole front.
+        </p>
+        <p>
+          Dominance-based algorithms attack this directly, by sorting. The trouble is that dominance is a partial order and a weak one: as $m$ grows, almost every pair of points becomes mutually non-dominated, the ranking flattens out, and the selection pressure that's supposed to drive the search quietly disappears.
+        </p>
+
+        <h2>The idea</h2>
+        <p>
+          MOEA/D (Zhang &amp; Li, 2007) sidesteps this. Instead of one $m$-objective problem, it solves $N$ ordinary single-objective problems simultaneously:
+        </p>
+
+        <blockquote>
+          Pick $N$ weight vectors spread evenly over the objective space. Each one defines a scalar problem whose optimum sits at a different point of the Pareto front. Solve all $N$ at once, and let neighbours share what they learn.
+        </blockquote>
+
+        <p>
+          The front stops being something you have to <em>discover the shape of</em> and becomes something you <em>sample at prescribed locations</em>. Each subproblem $i$ owns exactly one solution $x^i$, so diversity is structural rather than something you maintain with a crowding heuristic.
+        </p>
+        <p>
+          The weights $\lambda^1, \ldots, \lambda^N$ come from a simplex-lattice design: every vector with non-negative components summing to $1$, drawn from $\{0, \tfrac1H, \tfrac2H, \ldots, 1\}$. That gives $N = \binom{H+m-1}{m-1}$ of them. For two objectives with $H = 99$ you get a tidy $N = 100$ evenly spaced directions.
+        </p>
+
+        <h2>Turning weights into a scalar objective</h2>
+        <p>
+          You need a scalarising function $g(x \mid \lambda, z^\ast)$, where $z^\ast$ is the <em>ideal point</em>, $z^\ast_i = \min_{x \in \Omega} f_i(x)$ (in practice, the best value seen so far). Three standard choices:
+        </p>
+
+        <h3>Weighted sum</h3>
+        <p>
+          $$g^{\,\mathrm{ws}}(x \mid \lambda) = \sum_{i=1}^{m} \lambda_i f_i(x).$$
+        </p>
+        <p>
+          Simple, and hopeless on non-convex fronts: no choice of weights ever makes a point in a concave dent optimal, so those regions are unreachable no matter how you tune it.
+        </p>
+
+        <h3>Tchebycheff</h3>
+        <p>
+          $$g^{\,\mathrm{te}}(x \mid \lambda, z^\ast) = \max_{1 \le i \le m} \; \lambda_i \, \big| f_i(x) - z^\ast_i \big|.$$
+        </p>
+        <p>
+          This one can reach every Pareto-optimal point, convexity be damned, which is why it's the usual default. The mild annoyance is that the mapping from weight to front location isn't the one your intuition expects &mdash; the optimum for $\lambda$ lies roughly along the direction of the reciprocals $1/\lambda_i$, so an evenly spaced set of weights doesn't give perfectly evenly spaced solutions.
+        </p>
+
+        <h3>Penalty-based boundary intersection (PBI)</h3>
+        <p>
+          Here you split the displacement from $z^\ast$ into a component along the weight direction and a component perpendicular to it:
+        </p>
+        <p>
+          $$d_1 = \frac{\big\| (F(x) - z^\ast)^{\!\top} \lambda \big\|}{\|\lambda\|}, \qquad d_2 = \left\| F(x) - \left( z^\ast + d_1 \frac{\lambda}{\|\lambda\|} \right) \right\|,$$
+        </p>
+        <p>
+          $$g^{\,\mathrm{pbi}}(x \mid \lambda, z^\ast) = d_1 + \theta \, d_2.$$
+        </p>
+        <p>
+          Push along the ray ($d_1$ small), stay on the ray ($d_2$ penalised, typically $\theta = 5$). PBI tends to give the most uniform spread of the three, at the cost of one more parameter to get wrong.
+        </p>
+
+        <h2>Neighbourhoods: the part that does the work</h2>
+        <p>
+          The scalarisation is only half of it. The other half is that <em>similar weight vectors have similar optima</em>, so a solution that's good for subproblem $i$ is probably decent for its neighbours too.
+        </p>
+        <p>
+          So define $B(i)$ as the indices of the $T$ nearest weight vectors to $\lambda^i$ in Euclidean distance (say $T = 20$). Subproblem $i$ then breeds only with its neighbours, and offspring compete only for neighbours' slots. This is what makes the whole thing cheap.
+        </p>
+
+        <h2>The algorithm</h2>
+        <pre><code>input: N weight vectors w[1..N], neighbourhood size T, budget G
+
+# setup
+for i in 1..N:
+    B[i] := indices of the T nearest weight vectors to w[i]
+initialise x[1..N] at random, evaluate F(x[i])
+z := componentwise best so far          # ideal point estimate
+
+# evolve
+repeat G times:
+    for i in 1..N:
+
+        # 1. reproduce, using only subproblem i's neighbours
+        pick k, l at random from B[i]
+        y := mutate(crossover(x[k], x[l]))
+        evaluate F(y)
+
+        # 2. drag the ideal point along
+        for j in 1..m:
+            z[j] := min(z[j], f_j(y))
+
+        # 3. let y compete for its neighbours' slots
+        for j in B[i]:
+            if g(y | w[j], z) ≤ g(x[j] | w[j], z):
+                x[j] := y
+
+return x[1..N]
+</code></pre>
+        <p>
+          That's the entire algorithm. No non-dominated sorting, no crowding distance, no archive to prune &mdash; step 3 is a plain scalar comparison, which is the whole point.
+        </p>
+
+        <h2>Why it's cheap</h2>
+        <p>
+          NSGA-II's fast non-dominated sort costs $O(m N^2)$ per generation. MOEA/D's update loop touches $T$ neighbours per subproblem, so it's $O(m N T)$ &mdash; and since $T \ll N$ (twenty versus a few hundred is typical), that's close to linear in population size. The comparison operation itself is also just arithmetic on scalars rather than pairwise dominance checks.
+        </p>
+
+        <h2>Where it struggles</h2>
+        <p>
+          It isn't free, and the failure modes are worth knowing before you reach for it:
+        </p>
+        <ul>
+          <li><strong>Weights are a guess about geometry.</strong> Uniform in weight space only means uniform on the front if the front is reasonably regular. On disconnected or sharply curved fronts, solutions clump and whole weight vectors end up mapping to the same region &mdash; which is what adaptive-weight variants exist to fix.</li>
+          <li><strong>Scaling matters.</strong> If one objective is measured in thousands and another in fractions, the first dominates every scalarisation. Normalise using the ideal and nadir points, or the spread quietly collapses.</li>
+          <li><strong>Neighbourhood takeover.</strong> One very good offspring can replace every solution in its neighbourhood in a single step, wiping out local diversity. The standard fix (from MOEA/D-DE) is a cap $n_r$ on how many slots one child may claim &mdash; often just $2$.</li>
+          <li><strong>Population size isn't free to choose.</strong> $N = \binom{H+m-1}{m-1}$ grows combinatorially in $m$, so for many objectives you're pushed into two-layer weight generation rather than a single lattice.</li>
+        </ul>
+
+        <h2>Worth reading next</h2>
+        <p>
+          The original paper is Zhang and Li, <em>MOEA/D: A Multiobjective Evolutionary Algorithm Based on Decomposition</em>, IEEE Transactions on Evolutionary Computation (2007) &mdash; unusually readable for the genre. From there, MOEA/D-DE swaps in differential-evolution operators and adds the replacement cap, MOEA/D-DRA spends more evaluations on subproblems that are still improving, and NSGA-III borrows the reference-direction idea back into a dominance-based framework.
+        </p>
+        <p>
+          The thing I keep taking from it isn't really about evolutionary algorithms. It's the move of replacing one badly-ordered problem with a family of well-ordered ones, and letting the family's structure carry the information the original ordering couldn't.
+        </p>
+
+        <a href="notes.html" class="back-link">← back to notes</a>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>&copy; 2026 Parth Chavan.</footer>
+
+</body>
+</html>
